@@ -1,7 +1,11 @@
 html {
-  background-color: #994d00;
+  background-image: url("table.png");
+  background-size: cover;
+  overflow-x: hidden;
 }
-
+.start {
+  font-size: larger;
+}
 .visibility {
   visibility: hidden;
 }
@@ -12,22 +16,55 @@ html {
 
 .backCard {
   float: left;
-  height: 250px;
-  width: 160px;
+  height: 200px;
+  width: 130px;
   background-image: url("cardBack.png");
-  background-size: 160px 250px;
+  background-size: 130px 200px;
   margin-right: 10px;
 }
+
+.compCards {
+  position: relative;
+  margin-top: 50px;
+}
+.userCards {
+  margin-top: 50px;
+}
+
 .frontCard {
-  height: 250px;
-  width: 160px;
+  height: 200px;
+  width: 130px;
   text-align: center;
+  font-size: larger;
   float: left;
   background-color: white;
   margin-right: 10px;
   border-radius: 10px;
 }
 
-.userCards {
-  margin-top: 400px;
+.userScoreBlock {
+  width: 300px;
+  background-color: lightgrey;
+
+  margin-top: 300px;
+  text-align: center;
+  border-radius: 10px;
+  font-size: large;
+}
+
+.compScoreBlock {
+  position: relative;
+  width: 300px;
+  background-color: lightgrey;
+  margin-top: 10px;
+  text-align: center;
+  border-radius: 10px;
+  font-size: large;
+}
+
+button {
+  margin-top: 240px;
+  position: absolute;
+  left: 20px;
+  font-size: larger;
 }

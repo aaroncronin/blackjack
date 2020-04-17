@@ -98,7 +98,9 @@ function gamePlay(cards) {
   let userScore = 0;
   let compScore = 0;
   const userScoreDiv = document.createElement("div");
-
+  userScoreDiv.className = "userScoreBlock";
+  const compScoreDiv = document.createElement("div");
+  compScoreDiv.className = "compScoreBlock";
   let compCards = document.createElement("div");
   let userCards = document.createElement("div");
   userCards.className = "userCards";
@@ -110,7 +112,7 @@ function gamePlay(cards) {
       compCards.appendChild(card);
     } else {
       card.className = "frontCard";
-      card.innerText = cards[i].value + " " + cards[i].suit;
+      card.textContent = cards[i].value + " " + cards[i].suit;
       if (i % 2 == 0) {
         compCards.appendChild(card);
       } else {
@@ -120,10 +122,26 @@ function gamePlay(cards) {
     }
   }
   cards.splice(0, 4);
-  userScoreDiv.innerText = userScore;
+  userScoreDiv.textContent = "Player Hand - Total: " + userScore;
+  compScoreDiv.textContent = "Computer Hand - Total: " + compScore;
+
+  const hitButton = document.createElement("button");
+  hitButton.textContent = "Hit";
+
+  hitButton.addEventListener("click", function handleHit(evt) {
+    evt.preventDefault();
+    const hitCard = document.createElement("div");
+    const hitData = cards.shift(0);
+    hitCard.className = "frontCard";
+    hitCard.innerText = hitData.value + " " + hitData.suit;
+    console.log(hitCard);
+    userCards.appendChild(hitCard);
+  });
+  document.body.appendChild(compScoreDiv);
   document.body.appendChild(compCards);
   document.body.appendChild(userScoreDiv);
   document.body.appendChild(userCards);
+  document.body.appendChild(hitButton);
 }
 
 function getValue(value, score) {
