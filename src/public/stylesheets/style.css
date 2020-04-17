@@ -1,0 +1,33 @@
+html {
+  background-color: #994d00;
+}
+
+.visibility {
+  visibility: hidden;
+}
+
+.playBtn {
+  background-color: lightgray;
+}
+
+.backCard {
+  float: left;
+  height: 250px;
+  width: 160px;
+  background-image: url("cardBack.png");
+  background-size: 160px 250px;
+  margin-right: 10px;
+}
+.frontCard {
+  height: 250px;
+  width: 160px;
+  text-align: center;
+  float: left;
+  background-color: white;
+  margin-right: 10px;
+  border-radius: 10px;
+}
+
+.userCards {
+  margin-top: 400px;
+}
