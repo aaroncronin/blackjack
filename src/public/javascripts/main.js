@@ -8,9 +8,6 @@ function main() {
     const values = document.querySelector("#startValues").value;
     loadCards(values);
   });
-
-  // when user inputs values, change position of elements in input array
-  // to be at beginning of card array
 }
 function loadCards(values) {
   let cards = [
@@ -75,14 +72,14 @@ function loadCards(values) {
       if (cards[j].value === inputValues[i]) {
         arr.push(cards[j]);
         cards.splice(j, 1);
-        break Loop2;
+        break Loop2; // once element is found, remove and break
       }
     }
   }
   cards = shuffle(cards);
   const gameCards = arr.concat(cards);
 
-  gamePlay(gameCards);
+  initialGamePlay(gameCards);
 }
 
 // FISHER YATES ALGORITHM
@@ -94,7 +91,7 @@ function shuffle(cards) {
   return cards;
 }
 
-function gamePlay(cards) {
+function initialGamePlay(cards) {
   let userScore = 0;
   let compScore = 0;
   const userScoreDiv = document.createElement("div");
@@ -109,12 +106,15 @@ function gamePlay(cards) {
     let card = document.createElement("div");
     if (i === 0) {
       card.className = "backCard";
+      card.textContent = cards[i].value + " " + cards[i].suit;
       compCards.appendChild(card);
+      compScore += getValue(cards[i].value, compScore);
     } else {
       card.className = "frontCard";
       card.textContent = cards[i].value + " " + cards[i].suit;
       if (i % 2 == 0) {
         compCards.appendChild(card);
+        compScore += getValue(cards[i].value, compScore);
       } else {
         userScore += getValue(cards[i].value, userScore);
         userCards.appendChild(card);
@@ -122,26 +122,114 @@ function gamePlay(cards) {
     }
   }
   cards.splice(0, 4);
-  userScoreDiv.textContent = "Player Hand - Total: " + userScore;
-  compScoreDiv.textContent = "Computer Hand - Total: " + compScore;
 
   const hitButton = document.createElement("button");
   hitButton.textContent = "Hit";
+  const standButton = document.createElement("button");
+  standButton.className = "standButton";
+  standButton.textContent = "Stand";
 
+  const result = document.createElement("div");
+  result.className = "result";
+  let bjLabel;
+  let blackjack = false;
+  if (userScore === 21) {
+    bjLabel = document.createElement("div");
+    bjLabel.className = "blackjack";
+    bjLabel.textContent =
+      "Player Has Blackjack! Hit Stand to See Dealer's Hand.";
+    blackjack = true;
+    document.body.appendChild(bjLabel);
+  }
   hitButton.addEventListener("click", function handleHit(evt) {
     evt.preventDefault();
+
     const hitCard = document.createElement("div");
     const hitData = cards.shift(0);
     hitCard.className = "frontCard";
     hitCard.innerText = hitData.value + " " + hitData.suit;
-    console.log(hitCard);
+    userScore += getValue(hitData.value, userScore);
+
+    userScoreDiv.textContent = "Player Hand - Total: " + userScore;
     userCards.appendChild(hitCard);
+
+    // if (userScore === 21) {
+    //   hitButton.classList.toggle("visibility");
+    //   standButton.classList.toggle("visibility");
+    //   result.innerText = "Blackjack! Player Won! :)";
+    //   document.body.appendChild(result);
+
+    //   document
+    //     .querySelector(".compCards")
+    //     .querySelector(".backCard").className = "frontCard";
+
+    //   compScoreDiv.textContent = "Computer Hand - Total: " + compScore;
+    if (userScore > 21) {
+      hitButton.classList.toggle("visibility");
+      standButton.classList.toggle("visibility");
+
+      result.innerText = "Player Lost - Busted :(";
+      document.body.appendChild(result);
+
+      document
+        .querySelector(".compCards")
+        .querySelector(".backCard").className = "frontCard";
+
+      compScoreDiv.textContent = "Computer Hand - Total: " + compScore;
+    }
   });
+
+  standButton.addEventListener("click", function handleStand(evt) {
+    evt.preventDefault();
+    if (bjLabel) {
+      bjLabel.classList.toggle("visibility");
+    }
+
+    document.querySelector(".compCards").querySelector(".backCard").className =
+      "frontCard";
+
+    if (!blackjack) {
+      while (compScore < 17) {
+        // dealer hits until they have 17 or more
+        const card = document.createElement("div");
+        const cardData = cards.shift(0);
+        card.className = "frontCard";
+        card.innerText = cardData.value + " " + cardData.suit;
+        compScore += getValue(cardData.value, compScore);
+        compCards.appendChild(card);
+      }
+    }
+
+    hitButton.classList.toggle("visibility");
+    standButton.classList.toggle("visibility");
+    if (compScore === userScore) {
+      result.innerText = "Tied!";
+      document.body.appendChild(result);
+    } else if (compScore === 21) {
+      result.innerText = "Computer Has 21. Player Lost. :(";
+      document.body.appendChild(result);
+    } else if (compScore > 21) {
+      result.innerText = "Computer Busted. Player Won! :)";
+      document.body.appendChild(result);
+    } else if (21 - userScore > 21 - compScore) {
+      result.innerText = "Computer Closer to 21. Player Lost. :(";
+      document.body.appendChild(result);
+    } else {
+      result.innerText = "Player Won! :)";
+      document.body.appendChild(result);
+    }
+    compScoreDiv.textContent = "Computer Hand - Total: " + compScore;
+  });
+
+  userScoreDiv.textContent = "Player Hand - Total: " + userScore;
+  compScoreDiv.textContent = "Computer Hand - Total: ?";
+
   document.body.appendChild(compScoreDiv);
   document.body.appendChild(compCards);
   document.body.appendChild(userScoreDiv);
   document.body.appendChild(userCards);
   document.body.appendChild(hitButton);
+  document.body.appendChild(standButton);
 }
 
 function getValue(value, score) {

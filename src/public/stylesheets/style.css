@@ -4,6 +4,9 @@ html {
   overflow-x: hidden;
 }
 .start {
+  background-color: white;
+  width: 290px;
+  padding: 10px;
   font-size: larger;
 }
 .visibility {
@@ -15,6 +18,7 @@ html {
 }
 
 .backCard {
+  font-size: 0;
   float: left;
   height: 200px;
   width: 130px;
@@ -65,6 +69,31 @@ html {
 button {
   margin-top: 240px;
   position: absolute;
+  left: 40px;
+  font-size: larger;
+}
+
+.standButton {
+  margin-top: 240px;
+  position: absolute;
+  left: 100px;
+  font-size: larger;
+}
+
+.result {
+  margin-top: 240px;
+  position: absolute;
   left: 20px;
   font-size: larger;
+  background-color: white;
+  padding: 10px;
+}
+
+.blackjack {
+  margin-top: 300px;
+  position: absolute;
+  left: 400px;
+  font-size: larger;
+  background-color: white;
+  padding: 10px;
 }
