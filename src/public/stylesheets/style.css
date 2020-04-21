@@ -44,6 +44,7 @@ html {
   background-color: white;
   margin-right: 10px;
   border-radius: 10px;
+  position: relative;
 }
 
 .userScoreBlock {
@@ -96,4 +97,15 @@ button {
   font-size: larger;
   background-color: white;
   padding: 10px;
+}
+span {
+  position: absolute;
+}
+
+#top {
+  left: 0;
+}
+#bottom {
+  bottom: 0;
+  right: 0;
 }

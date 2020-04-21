@@ -66,19 +66,19 @@ function loadCards(values) {
   ];
   const inputValues = values.split(",");
   let arr = [];
-
-  Loop1: for (let i = 0; i < inputValues.length; i++) {
-    Loop2: for (let j = 0; j < cards.length; j++) {
-      if (cards[j].value === inputValues[i]) {
-        arr.push(cards[j]);
-        cards.splice(j, 1);
-        break Loop2; // once element is found, remove and break
-      }
-    }
+  let gameCards = [];
+  if (inputValues[0] !== "") {
+    inputValues.forEach((i) => {
+      let cardMatches = cards.filter((card) => card.value === i);
+      const idx = Math.floor(Math.random() * cardMatches.length); //get random suit
+      arr.push(cardMatches[idx]);
+      cards.splice(cards.indexOf(cardMatches[idx]), 1);
+    });
+    cards = shuffle(cards);
+    gameCards = arr.concat(cards);
+  } else {
+    gameCards = shuffle(cards);
   }
-  cards = shuffle(cards);
-  const gameCards = arr.concat(cards);
-
   initialGamePlay(gameCards);
 }
 
@@ -102,16 +102,17 @@ function initialGamePlay(cards) {
   let userCards = document.createElement("div");
   userCards.className = "userCards";
   compCards.className = "compCards";
+
   for (let i = 0; i < 4; i++) {
     let card = document.createElement("div");
     if (i === 0) {
       card.className = "backCard";
-      card.textContent = cards[i].value + " " + cards[i].suit;
+      card.innerHTML = newCard(cards[i]);
       compCards.appendChild(card);
       compScore += getValue(cards[i].value, compScore);
     } else {
       card.className = "frontCard";
-      card.textContent = cards[i].value + " " + cards[i].suit;
+      card.innerHTML = newCard(cards[i]);
       if (i % 2 == 0) {
         compCards.appendChild(card);
         compScore += getValue(cards[i].value, compScore);
@@ -121,7 +122,7 @@ function initialGamePlay(cards) {
       }
     }
   }
-  cards.splice(0, 4);
+  cards.splice(0, 4); // remove first 4 cards from deck
 
   const hitButton = document.createElement("button");
   hitButton.textContent = "Hit";
@@ -129,8 +130,6 @@ function initialGamePlay(cards) {
   standButton.className = "standButton";
   standButton.textContent = "Stand";
 
-  const result = document.createElement("div");
-  result.className = "result";
   let bjLabel;
   let blackjack = false;
   if (userScore === 21) {
@@ -141,29 +140,21 @@ function initialGamePlay(cards) {
     blackjack = true;
     document.body.appendChild(bjLabel);
   }
+
+  const result = document.createElement("div");
+  result.className = "result";
+
   hitButton.addEventListener("click", function handleHit(evt) {
     evt.preventDefault();
-
     const hitCard = document.createElement("div");
     const hitData = cards.shift(0);
     hitCard.className = "frontCard";
-    hitCard.innerText = hitData.value + " " + hitData.suit;
+    hitCard.innerHTML = newCard(hitData);
     userScore += getValue(hitData.value, userScore);
 
     userScoreDiv.textContent = "Player Hand - Total: " + userScore;
     userCards.appendChild(hitCard);
 
-    // if (userScore === 21) {
-    //   hitButton.classList.toggle("visibility");
-    //   standButton.classList.toggle("visibility");
-    //   result.innerText = "Blackjack! Player Won! :)";
-    //   document.body.appendChild(result);
-
-    //   document
-    //     .querySelector(".compCards")
-    //     .querySelector(".backCard").className = "frontCard";
-
-    //   compScoreDiv.textContent = "Computer Hand - Total: " + compScore;
     if (userScore > 21) {
       hitButton.classList.toggle("visibility");
       standButton.classList.toggle("visibility");
@@ -194,7 +185,8 @@ function initialGamePlay(cards) {
         const card = document.createElement("div");
         const cardData = cards.shift(0);
         card.className = "frontCard";
-        card.innerText = cardData.value + " " + cardData.suit;
+        card.innerHTML = newCard(cardData);
+
         compScore += getValue(cardData.value, compScore);
         compCards.appendChild(card);
       }
@@ -243,4 +235,17 @@ function getValue(value, score) {
     numVal = parseInt(value);
   }
   return numVal;
+}
+
+function newCard(cardData) {
+  return (
+    "<span id='top'>" +
+    cardData.value +
+    cardData.suit +
+    "</span>" +
+    "<span id='bottom'>" +
+    cardData.value +
+    cardData.suit +
+    "</span>"
+  );
 }
