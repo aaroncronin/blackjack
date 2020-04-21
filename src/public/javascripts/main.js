@@ -120,7 +120,6 @@ function initialGamePlay(cards) {
         comps.push(cards[i]);
         compScore = optimize(comps);
       } else {
-        //userScore += getValue(cards[i].value, userScore);
         users.push(cards[i]);
         userScore = optimize(users);
         userCards.appendChild(card);
@@ -155,7 +154,6 @@ function initialGamePlay(cards) {
     const hitData = cards.shift(0);
     hitCard.className = "frontCard";
     hitCard.innerHTML = newCard(hitData);
-    //userScore += getValue(hitData.value, userScore);
     users.push(hitData);
     userScore = optimize(users);
     userScoreDiv.textContent = "Player Hand - Total: " + userScore;
