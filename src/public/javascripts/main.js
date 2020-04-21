@@ -102,22 +102,27 @@ function initialGamePlay(cards) {
   let userCards = document.createElement("div");
   userCards.className = "userCards";
   compCards.className = "compCards";
-
+  let users = [];
+  let comps = [];
   for (let i = 0; i < 4; i++) {
     let card = document.createElement("div");
     if (i === 0) {
       card.className = "backCard";
       card.innerHTML = newCard(cards[i]);
       compCards.appendChild(card);
-      compScore += getValue(cards[i].value, compScore);
+      comps.push(cards[i]);
+      compScore = optimize(comps);
     } else {
       card.className = "frontCard";
       card.innerHTML = newCard(cards[i]);
       if (i % 2 == 0) {
         compCards.appendChild(card);
-        compScore += getValue(cards[i].value, compScore);
+        comps.push(cards[i]);
+        compScore = optimize(comps);
       } else {
-        userScore += getValue(cards[i].value, userScore);
+        //userScore += getValue(cards[i].value, userScore);
+        users.push(cards[i]);
+        userScore = optimize(users);
         userCards.appendChild(card);
       }
     }
@@ -150,8 +155,9 @@ function initialGamePlay(cards) {
     const hitData = cards.shift(0);
     hitCard.className = "frontCard";
     hitCard.innerHTML = newCard(hitData);
-    userScore += getValue(hitData.value, userScore);
-
+    //userScore += getValue(hitData.value, userScore);
+    users.push(hitData);
+    userScore = optimize(users);
     userScoreDiv.textContent = "Player Hand - Total: " + userScore;
     userCards.appendChild(hitCard);
 
@@ -186,8 +192,8 @@ function initialGamePlay(cards) {
         const cardData = cards.shift(0);
         card.className = "frontCard";
         card.innerHTML = newCard(cardData);
-
-        compScore += getValue(cardData.value, compScore);
+        comps.push(cardData);
+        compScore = optimize(comps);
         compCards.appendChild(card);
       }
     }
@@ -235,6 +241,28 @@ function getValue(value, score) {
     numVal = parseInt(value);
   }
   return numVal;
+}
+
+function optimize(cards) {
+  let score = 0;
+  const faceCards = ["J", "Q", "K"];
+  const nonAce = cards.filter((c) => c.value !== "A");
+  const aces = cards.filter((c) => c.value === "A");
+  nonAce.forEach((c) => {
+    if (faceCards.includes(c.value)) {
+      score += 10;
+    } else {
+      score += parseInt(c.value);
+    }
+  });
+  aces.forEach((a) => {
+    if (score + 11 <= 21) {
+      score += 11;
+    } else {
+      score += 1;
+    }
+  });
+  return score;
 }
 
 function newCard(cardData) {
